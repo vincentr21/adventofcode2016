@@ -72,3 +72,53 @@ for line in input:
 print count
 
 # =============================================== part 2 ======================================================
+
+
+count = 0
+def getABAList(outerList):
+    ABAList = set()
+    for token in outerList:
+        N = len(token)
+        for i in range(0, N - 2):
+            a0 = token[i]
+            b = token[i + 1]
+            a1 = token[i + 2]
+            if a0 != b and a0 == a1:
+                ABAList.add(a0+b+a1)
+    return ABAList
+
+def BABIsInABAList(ABAList, innerList):
+    for token in innerList:
+        N = len(token)
+        for i in range(0, N - 2):
+            a0 = token[i]
+            b = token[i + 1]
+            a1 = token[i + 2]
+            if a0 != b and a0 == a1:
+                ABA = b+a0+b
+
+                if ABA in ABAList:
+                    return True
+
+    return False
+
+
+for line in input:
+    isInvalid = False
+
+    inner = re.findall(r'\[([a-z]+)\]', line)
+    # outer = re.findall(r'^([a-z]+)|([a-z]+)$|\]([a-z]+)\[', line)
+    # couldn't put these two regexes into one...
+    outer = re.findall(r'(.*?)\[.*?\]', line)
+    last_outer = re.findall(r'\[[a-z]*?\]([a-z]*?)$', line)
+    # appends the last found token by regex into the outer list
+    outer.append(last_outer[0])
+
+
+    ABAList = getABAList(outer)
+
+    if BABIsInABAList(ABAList, inner):
+        count += 1
+
+print count
+
